@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>변똥의 CBT 교실</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .dday-badge {
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            background: #e8f0fe;
+            color: #1a73e8;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1em;
+            border: 1px solid #b8daff;
+        }
+        h1 {
+            text-align: center;
+            color: #1a73e8;
+            font-size: 2.5em;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="date"], select {
+            width: 70%;
+            padding: 12px;
+            font-size: 1.1em;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button, .btn {
+            padding: 12px 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #1a73e8;
+            color: white;
+            transition: background 0.2s;
+        }
+        button:hover { background-color: #1557b0; }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover { background-color: #5a6268; }
+        .grid-9 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .subject-btn {
+            padding: 22px;
+            font-size: 1.2em;
+            background-color: #fff;
+            color: #1a73e8;
+            border: 2px solid #1a73e8;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .subject-btn:hover {
+            background-color: #1a73e8;
+            color: white;
+        }
+        .timer-box {
+            font-size: 1.5em;
+            color: #d93025;
+            font-weight: bold;
+            text-align: right;
+            margin-bottom: 15px;
+        }
+        .period-banner {
+            background-color: #e8f0fe;
+            color: #1a73e8;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        .hidden { display: none !important; }
+        .question-box {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .options label {
+            display: block;
+            background: #fff;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+        }
+        .options label:hover {
+            background: #e8f0fe;
+        }
+        
+        .req-box {
+            background: #fff;
+            border: 1px solid #cfe2ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .req-box h3 {
+            color: #0d6efd;
+            margin-top: 0;
+        }
+
+        .note-item {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .opt-span {
+            display: block;
+            padding: 10px 15px;
+            margin-top: 6px;
+            border-radius: 6px;
+            font-size: 1.05em;
+        }
+        .my-wrong {
+            background-color: #f8d7da !important;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            font-weight: bold;
+        }
+        .correct-ans {
+            background-color: #cce5ff !important;
+            color: #004085;
+            border: 1px solid #b8daff;
+            font-weight: bold;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .admin-table th, .admin-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .admin-table th { background-color: #f1f3f4; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="ddayBadge" class="dday-badge hidden">시험 D-Day 계산중...</div>
+
+    <h1>변똥의 CBT 교실</h1>
+    <div class="subtitle">고령·중년층을 위한 간편 자격증 취득 연습장</div>
+
+    <!-- 1. 로그인 화면 -->
+    <div id="loginScreen" class="card">
+        <h2>로그인</h2>
+        <p>아이디를 입력하거나 비회원으로 시작하세요.</p>
+        <div style="margin-top: 15px;">
+            <input type="text" id="userIdInput" placeholder="아이디를 입력하세요">
+            <button onclick="handleLogin('user')">로그인</button>
+        </div>
+        <div style="margin-top: 15px;">
+            <button class="btn btn-secondary" onclick="handleLogin('guest')" style="width: 100%;">비회원으로 로그인하기 (Guest 모드)</button>
+        </div>
+    </div>
+
+    <!-- 2. 메인 과목 선택 화면 -->
+    <div id="mainScreen" class="card hidden">
+        <h2>환영합니다, <span id="displayUser"></span>님!</h2>
+        <p id="modeDesc" style="font-weight: bold; color: #1a73e8;"></p>
+        <p>응시할 자격증 과목을 선택해주세요.</p>
+        
+        <div class="grid-9">
+            <div class="subject-btn" onclick="showRequirement('전기기능사')">전기기능사</div>
+            <div class="subject-btn" onclick="showRequirement('한식조리기능사')">한식조리기능사</div>
+            <div class="subject-btn" onclick="showRequirement('조경기능사')">조경기능사</div>
+            <div class="subject-btn" onclick="showRequirement('지게차운전기능사')">지게차운전기능사</div>
+            <div class="subject-btn" onclick="showRequirement('간호조무사')">간호조무사</div>
+            <div class="subject-btn" onclick="showRequirement('요양보호사')">요양보호사</div>
+            <div class="subject-btn" onclick="showRequirement('직업상담사2급')">직업상담사 2급</div>
+            <div class="subject-btn" onclick="showRequirement('사회복지사1급')">사회복지사 1급</div>
+        </div>
+
+        <div style="margin-top: 25px; text-align: right;" id="adminMenuBtnContainer" class="hidden">
+            <button class="btn" style="background-color: #d93025;" onclick="showAdminScreen()">⚙️ 관리자 설정 모드 (Admin)</button>
+        </div>
+    </div>
+
+    <!-- 3. 자격요건 안내 페이지 -->
+    <div id="requirementScreen" class="card hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 id="reqTitle">자격요건 안내</h2>
+            <button class="btn btn-secondary" onclick="goToMain()">메인으로 돌아가기</button>
+        </div>
+        <div class="req-box" id="reqContentText">
+            <!-- 자격요건 동적 삽입 -->
+        </div>
+        <div style="text-align: right;">
+            <button class="btn" onclick="startCbtFromReq()">자격요건 확인 및 시험 시작</button>
+        </div>
+    </div>
+
+    <!-- 4. CBT 문제 풀이 화면 -->
+    <div id="cbtScreen" class="card hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 id="cbtTitle">과목명</h2>
+            <button class="btn btn-secondary" onclick="goToMain()">메인으로 돌아가기</button>
+        </div>
+        <div class="timer-box" id="timerWrapper">남은 시간: <span id="timer">60</span>초</div>
+        
+        <!-- 교시/영역 안내 배너 -->
+        <div id="periodBanner" class="period-banner">교시 정보 표시 영역</div>
+
+        <div id="quizContainer">
+            <div class="question-box" id="questionText">문제 내용이 여기에 표시됩니다.</div>
+            <div class="options" id="optionsContainer">
+                <!-- 보기 항목들 -->
+            </div>
+            <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()">이전 문제</button>
+                <button onclick="nextQuestion()" id="nextBtn">다음 문제</button>
+            </div>
+        </div>
+        
+        <!-- 시험 결과 및 오답노트 진입 화면 -->
+        <div id="resultContainer" class="hidden" style="text-align: center; padding: 20px;">
+            <h3>시험이 종료되었습니다!</h3>
+            <p id="scoreText" style="font-size: 1.3em; margin: 20px 0;"></p>
+            <div style="display: flex; justify-content: center; gap: 10px;">
+                <button onclick="startCbt(currentSubject)">다시 풀기</button>
+                <button class="btn" style="background-color: #d93025;" onclick="showNoteScreen()">오답노트 보기</button>
+                <button class="btn btn-secondary" onclick="goToMain()">메인으로</button>
+            </div>
+        </div>
+
+        <!-- 오답노트 상세 화면 -->
+        <div id="noteContainer" class="hidden" style="margin-top: 20px;">
+            <h3>틀린 문제 오답노트</h3>
+            <p style="color: #666; margin-bottom: 20px;">내가 선택한 오답은 <span style="background:#f8d7da; color:#721c24; padding:2px 6px; font-weight:bold;">빨간 바탕</span>, 실제 정답은 <span style="background:#cce5ff; color:#004085; padding:2px 6px; font-weight:bold;">파란 바탕</span>으로 표시됩니다.</p>
+            <div id="noteListContent">
+                <!-- 틀린 문제들이 동적으로 들어감 -->
+            </div>
+            <div style="margin-top: 20px; text-align: center;">
+                <button class="btn btn-secondary" onclick="backToResult()">결과 화면으로</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. 관리자 모드 (Admin Dashboard) -->
+    <div id="adminScreen" class="card hidden">
+        <h2>🛠️ 관리자 설정 모드 (Admin)</h2>
+        <p>시험 날짜 및 출제 문항 수, 문제 관리를 수행할 수 있습니다.</p>
+        <button class="btn btn-secondary" onclick="goToMain()" style="margin-bottom: 20px;">메인으로 돌아가기</button>
+        
+        <div class="card" style="background: #fff;">
+            <h3>📅 과목별 시험 날짜 (D-Day) 설정</h3>
+            <div id="adminDateInputs"></div>
+            <button onclick="saveAdminSettings()">날짜 설정 저장</button>
+        </div>
+
+        <div class="card" style="background: #fff; margin-top: 20px;">
+            <h3>⚙️ 기본 출제 문제 수 설정 (기능사 등)</h3>
+            <input type="text" id="adminQuizCount" value="60" style="width: 30%;">
+            <button onclick="saveQuizCount()">출제 수 저장</button>
+        </div>
+
+        <div class="card" style="background: #fff; margin-top: 20px;">
+            <h3>📝 새로운 CBT 문제 추가</h3>
+            <input type="text" id="newQSubject" placeholder="과목명 (예: 전기기능사)" style="width: 40%;"><br>
+            <input type="text" id="newQText" placeholder="문제 내용을 입력하세요" style="width: 90%;"><br>
+            <input type="text" id="newQOpts" placeholder="보기 4개를 콤마(,)로 구분해 입력" style="width: 90%;"><br>
+            <button onclick="addNewQuestion()">문제 등록</button>
+        </div>
+
+        <!-- 로그인 기록 조회 섹션 -->
+        <div class="card" style="background: #fff; margin-top: 20px;">
+            <h3>📊 로그인 접속 기록 및 통계 관리</h3>
+            <p>아래 버튼을 누르면 전체 로그인 기록을 확인할 수 있습니다.</p>
+            <button class="btn" style="background-color: #1a73e8;" onclick="toggleLogView()">📋 로그인 기록 조회 열기/닫기</button>
+            
+            <div id="logSection" class="hidden" style="margin-top: 20px;">
+                <div style="margin-bottom: 15px;">
+                    <label style="font-weight: bold;">조회 연도 선택: </label>
+                    <select id="yearSelect" onchange="filterLogsByYear()" style="padding: 8px; width: 200px;">
+                        <option value="all">전체 연도 보기</option>
+                        <option value="2026">2026년</option>
+                        <option value="2025">2025년</option>
+                        <option value="2024">2024년</option>
+                    </select>
+                </div>
+                <div id="yearlyStats" style="background: #e8f0fe; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-weight: bold; color: #1a73e8;">
+                </div>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>아이디 / 구분</th>
+                            <th>접속 시간</th>
+                        </tr>
+                    </thead>
+                    <tbody id="loginLogsBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const requirementsData = {
+        "전기기능사": `<h3>⚡ 전기기능사 응시 자격요건</h3><p><b>1. 응시 자격:</b> 연령, 학력, 경력, 지역 등 <b>제한 없음</b></p><p><b>2. 참고 홈페이지:</b> <a href="https://www.q-net.or.kr" target="_blank" style="color:#1a73e8; font-weight:bold;">큐넷 (Q-Net)</a></p>`,
+        "한식조리기능사": `<h3>🍲 한식조리기능사 응시 자격요건</h3><p><b>1. 응시 자격:</b> 연령, 학력, 경력, 지역 등 <b>제한 없음</b></p><p><b>2. 참고 홈페이지:</b> <a href="https://www.q-net.or.kr" target="_blank" style="color:#1a73e8; font-weight:bold;">큐넷 (Q-Net)</a></p>`,
+        "조경기능사": `<h3>🌳 조경기능사 응시 자격요건</h3><p><b>1. 응시 자격:</b> 연령, 학력, 경력, 지역 등 <b>제한 없음</b></p><p><b>2. 참고 홈페이지:</b> <a href="https://www.q-net.or.kr" target="_blank" style="color:#1a73e8; font-weight:bold;">큐넷 (Q-Net)</a></p>`,
+        "지게차운전기능사": `<h3>🚜 지게차운전기능사 응시 자격요건</h3><p><b>1. 응시 자격:</b> 연령, 학력, 경력, 지역 등 <b>제한 없음</b> (1종 보통 운전면허 필요)</p><p><b>2. 참고 홈페이지:</b> <a href="https://www.q-net.or.kr" target="_blank" style="color:#1a73e8; font-weight:bold;">큐넷 (Q-Net)</a></p>`,
+        "간호조무사": `<h3>💉 간호조무사 응시 자격요건</h3><p><b>1. 응시 자격:</b> 고졸 이상 + 지정 양성학원 이론 및 실습 수료자 (총 105문항)</p><p><b>2. 참고 홈페이지:</b> <a href="https://www.kuksiwon.or.kr" target="_blank" style="color:#1a73e8; font-weight:bold;">국시원 간호조무사 안내</a></p>`,
+        "요양보호사": `<h3>👵 요양보호사 응시 자격요건</h3><p><b>1. 응시 자격:</b> 연령·학력 제한 없음 + 소정의 양성 교육과정 수료자 (총 80문항)</p><p><b>2. 참고 홈페이지:</b> <a href="https://www.kuksiwon.or.kr" target="_blank" style="color:#1a73e8; font-weight:bold;">국시원 요양보호사 안내</a></p>`,
+        "직업상담사2급": `<h3>💼 직업상담사 2급 응시 자격요건</h3><p><b>1. 응시 자격:</b> 필기시험은 제한 없음 (총 100문항, 5개 과목)</p><p><b>2. 참고 홈페이지:</b> <a href="https://www.q-net.or.kr" target="_blank" style="color:#1a73e8; font-weight:bold;">큐넷 (Q-Net)</a></p>`,
+        "사회복지사1급": `<h3>🤝 사회복지사 1급 응시 자격요건</h3><p><b>1. 응시 자격:</b> 사회복지사 2급 + 4년제 대학 졸업 또는 2년제 대학 졸업 + 경력 1년 이상 (총 200문항)</p><p><b>2. 참고 홈페이지:</b> <a href="https://blog.naver.com/qrhackers/224363939586" target="_blank" style="color:#1a73e8; font-weight:bold;">해커스 네이버 블로그 참조</a></p>`
+    };
+
+    // 각 과목별 데이터 생성 유틸리티
+    function makeBasicQuiz(subjectName, count) {
+        return Array.from({length: count}, (_, i) => ({
+            q: `[${subjectName}] 기출 샘플 문제 내용 ${i+1}번 입니다. 올바른 것을 고르시오.`,
+            opts: ["①보기 1번", "②보기 2번", "③보기 3번", "④보기 4번"],
+            ans: 0
+        }));
+    }
+
+    const rawData = {
+        "전기기능사": makeBasicQuiz("전기기능사", 60),
+        "한식조리기능사": makeBasicQuiz("한식조리기능사", 60),
+        "조경기능사": makeBasicQuiz("조경기능사", 60),
+        "지게차운전기능사": makeBasicQuiz("지게차운전기능사", 60),
+        
+        // 간호조무사: 총 105문항 (기초간호 35, 보건간호 15, 공중보건 20, 실기 35)
+        "간호조무사": [
+            ...makeBasicQuiz("1과목: 기초간호학개요", 35),
+            ...makeBasicQuiz("2과목: 보건간호학개요", 15),
+            ...makeBasicQuiz("3과목: 공중보건학개론", 20),
+            ...makeBasicQuiz("4과목: 실기", 35)
+        ],
+
+        // 요양보호사: 총 80문항 (필기 35, 실기 45)
+        "요양보호사": [
+            ...makeBasicQuiz("필기: 요양보호론", 35),
+            ...makeBasicQuiz("실기: 요양보호에 관한 것", 45)
+        ],
+
+        // 직업상담사 2급: 총 100문항 (각 과목 20문항씩 5과목)
+        "직업상담사2급": [
+            ...makeBasicQuiz("1과목: 직업심리", 20),
+            ...makeBasicQuiz("2과목: 직업상담 및 취업지원", 20),
+            ...makeBasicQuiz("3과목: 직업정보", 20),
+            ...makeBasicQuiz("4과목: 노동시장", 20),
+            ...makeBasicQuiz("5과목: 고용노동관계법규(I)", 20)
+        ],
+
+        // 사회복지사 1급: 총 200문항 (1~3교시 체계)
+        "사회복지사1급": [
+            ...Array.from({length: 50}, (_, i) => ({ q: `[1교시: 사회복지기초] 문항 ${i+1}`, opts: ["① 보기 1", "② 보기 2", "③ 보기 3", "④ 보기 4"], ans: 0 })),
+            ...Array.from({length: 75}, (_, i) => ({ q: `[2교시: 사회복지실천] 문항 ${i+1}`, opts: ["① 보기 1", "② 보기 2", "③ 보기 3", "④ 보기 4"], ans: 0 })),
+            ...Array.from({length: 75}, (_, i) => ({ q: `[3교시: 사회복지정책과 제도] 문항 ${i+1}`, opts: ["① 보기 1", "② 보기 2", "③ 보기 3", "④ 보기 4"], ans: 0 }))
+        ]
+    };
+
+    let currentUser = "";
+    let currentRole = ""; 
+    let currentSubject = "";
+    let currentQuizList = []; 
+    let userAnswers = {};     
+    let currentIdx = 0;
+    let timerInterval;
+    let timeLeft = 60;
+    
+    let loginLogs = [];
+
+    let examDates = {
+        "전기기능사": "2026-06-30",
+        "한식조리기능사": "2026-06-25",
+        "조경기능사": "2026-07-05",
+        "지게차운전기능사": "2026-07-10",
+        "간호조무사": "2026-08-15",
+        "요양보호사": "2026-08-20",
+        "직업상담사2급": "2026-09-10",
+        "사회복지사1급": "2027-01-20"
+    };
+    let quizCountSetting = 60; 
+
+    function handleLogin(type) {
+        const inputVal = document.getElementById('userIdInput').value.trim();
+        if(type === 'guest') {
+            currentUser = "게스트 (Guest)";
+            currentRole = "guest";
+        } else {
+            if(!inputVal) {
+                alert("아이디를 입력해주세요!");
+                return;
+            }
+            currentUser = inputVal;
+            if(inputVal === 'byun1828') {
+                currentRole = "admin";
+            } else {
+                currentRole = "user";
+            }
+        }
+
+        loginLogs.unshift({
+            id: currentUser,
+            time: new Date().toLocaleString()
+        });
+
+        document.getElementById('displayUser').innerText = currentUser;
+        
+        if(currentRole === 'admin') {
+            document.getElementById('modeDesc').innerText = "⭐ [관리자 모드 (Admin)] - 모든 설정 및 문제 관리가 가능합니다.";
+            document.getElementById('adminMenuBtnContainer').classList.remove('hidden');
+        } else {
+            document.getElementById('modeDesc').innerText = "👤 [일반 사용자/게스트 모드 (Guest)] - CBT 응시 전용";
+            document.getElementById('adminMenuBtnContainer').classList.add('hidden');
+        }
+
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('mainScreen').classList.remove('hidden');
+        document.getElementById('ddayBadge').classList.remove('hidden');
+        
+        updateDDayDisplay("전기기능사"); 
+    }
+
+    function updateDDayDisplay(subject) {
+        const targetDateStr = examDates[subject] || "2026-12-31";
+        const targetDate = new Date(targetDateStr);
+        const today = new Date();
+        
+        const diffTime = targetDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        let badgeText = "";
+        if (diffDays > 0) {
+            badgeText = `${subject} D-${diffDays} (${targetDateStr})`;
+        } else if (diffDays === 0) {
+            badgeText = `${subject} D-DAY (오늘 시험!)`;
+        } else {
+            badgeText = `${subject} 시험 종료`;
+        }
+        document.getElementById('ddayBadge').innerText = badgeText;
+    }
+
+    function showRequirement(subject) {
+        currentSubject = subject;
+        updateDDayDisplay(subject);
+        document.getElementById('mainScreen').classList.add('hidden');
+        document.getElementById('reqTitle').innerText = subject + " 응시 자격요건 안내";
+        document.getElementById('reqContentText').innerHTML = requirementsData[subject] || "<p>자격요건 정보가 준비 중입니다.</p>";
+        document.getElementById('requirementScreen').classList.remove('hidden');
+    }
+
+    function startCbtFromReq() {
+        document.getElementById('requirementScreen').classList.add('hidden');
+        startCbt(currentSubject);
+    }
+
+    function shuffleArray(array) {
+        let arr = [...array];
+        for (let i = arr.length - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function startCbt(subject) {
+        currentSubject = subject;
+        currentIdx = 0;
+        userAnswers = {};
+        
+        let allPool = rawData[subject] || [];
+        // 기능사 과목들은 관리자 설정값(기본 60문제), 그 외 전문 자격시험은 전체 고정 문항 사용
+        let limitCount = (["전기기능사", "한식조리기능사", "조경기능사", "지게차운전기능사"].includes(subject)) ? quizCountSetting : allPool.length;
+        currentQuizList = shuffleArray(allPool).slice(0, limitCount);
+
+        document.getElementById('mainScreen').classList.add('hidden');
+        document.getElementById('requirementScreen').classList.add('hidden');
+        document.getElementById('adminScreen').classList.add('hidden');
+        document.getElementById('noteContainer').classList.add('hidden');
+        document.getElementById('cbtScreen').classList.remove('hidden');
+        document.getElementById('cbtTitle').innerText = `${subject} CBT 시험 (총 ${currentQuizList.length}문제)`;
+        document.getElementById('quizContainer').classList.remove('hidden');
+        document.getElementById('resultContainer').classList.add('hidden');
+        
+        loadQuestion();
+    }
+
+    // 과목 및 영역/교시 배너 안내 함수
+    function getPeriodInfo(subject, idx) {
+        if (subject === "사회복지사1급") {
+            if (idx < 50) return "🔔 [1교시] 사회복지기초 (인간행동과 사회환경, 사회복지조사론)";
+            else if (idx < 125) return "🔔 [2교시] 사회복지실천 (실천론, 실천기술론, 지역사회복지론)";
+            else return "🔔 [3교시] 사회복지정책과 제도 (정책론, 행정론, 법제론)";
+        } else if (subject === "직업상담사2급") {
+            if (idx < 20) return "📘 [1과목] 직업심리 (20문항)";
+            else if (idx < 40) return "📘 [2과목] 직업상담 및 취업지원 (20문항)";
+            else if (idx < 60) return "📘 [3과목] 직업정보 (20문항)";
+            else if (idx < 80) return "📘 [4과목] 노동시장 (20문항)";
+            else return "📘 [5과목] 고용노동관계법규(I) (20문항)";
+        } else if (subject === "간호조무사") {
+            if (idx < 35) return "💉 [1과목] 기초간호학개요 (35문항)";
+            else if (idx < 50) return "💉 [2과목] 보건간호학개요 (15문항)";
+            else if (idx < 70) return "💉 [3과목] 공중보건학개론 (20문항)";
+            else return "💉 [4과목] 실기 (35문항)";
+        } else if (subject === "요양보호사") {
+            if (idx < 35) return "👵 [필기] 요양보호론 (35문항)";
+            else return "👵 [실기] 요양보호에 관한 것 (45문항)";
+        }
+        return `🔔 ${subject} 시험 영역 (문제 ${idx + 1})`;
+    }
+
+    function loadQuestion() {
+        clearInterval(timerInterval);
+        timeLeft = 60;
+        document.getElementById('timer').innerText = timeLeft;
+        document.getElementById('timerWrapper').style.display = "block";
+        
+        document.getElementById('periodBanner').innerText = getPeriodInfo(currentSubject, currentIdx);
+
+        const qData = currentQuizList[currentIdx];
+        document.getElementById('questionText').innerText = `(${currentIdx + 1}/${currentQuizList.length}) ${qData.q}`;
+        
+        const optHtml = qData.options.map((opt, idx) => `
+            <label><input type="radio" name="quizOpt" value="${idx}"> ${opt}</label>
+        `).join('');
+        document.getElementById('optionsContainer').innerHTML = optHtml;
+
+        if(userAnswers[currentIdx] !== undefined) {
+            const radios = document.getElementsByName('quizOpt');
+            if(radios[userAnswers[currentIdx]]) {
+                radios[userAnswers[currentIdx]].checked = true;
+            }
+        }
+
+        if(currentIdx === 0) {
+            document.getElementById('prevBtn').style.display = 'none';
+        } else {
+            document.getElementById('prevBtn').style.display = 'inline-block';
+        }
+
+        if(currentIdx === currentQuizList.length - 1) {
+            document.getElementById('nextBtn').innerText = "시험 제출";
+        } else {
+            document.getElementById('nextBtn').innerText = "다음 문제";
+        }
+
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer').innerText = timeLeft;
+            if(timeLeft <= 0) {
+                clearInterval(timerInterval);
+                alert("60초 시간이 초과되었습니다! 다음 문제로 넘어갑니다.");
+                goNextStep();
+            }
+        }, 1000);
+    }
+
+    function saveCurrentAnswer() {
+        const radios = document.getElementsByName('quizOpt');
+        for(let r of radios) {
+            if(r.checked) {
+                userAnswers[currentIdx] = parseInt(r.value);
+                break;
+            }
+        }
+    }
+
+    function nextQuestion() {
+        saveCurrentAnswer();
+        goNextStep();
+    }
+
+    function goNextStep() {
+        clearInterval(timerInterval);
+        currentIdx++;
+        if(currentIdx < currentQuizList.length) {
+            loadQuestion();
+        } else {
+            finishExam();
+        }
+    }
+
+    function prevQuestion() {
+        saveCurrentAnswer();
+        clearInterval(timerInterval);
+        if(currentIdx > 0) {
+            currentIdx--;
+            loadPreviousQuestionView();
+        }
+    }
+
+    function loadPreviousQuestionView() {
+        document.getElementById('timerWrapper').style.display = "none";
+        document.getElementById('periodBanner').innerText = getPeriodInfo(currentSubject, currentIdx);
+        
+        const qData = currentQuizList[currentIdx];
+        document.getElementById('questionText').innerText = `(${currentIdx + 1}/${currentQuizList.length}) ${qData.q}`;
+        
+        const optHtml = qData.options.map((opt, idx) => `
+            <label><input type="radio" name="quizOpt" value="${idx}"> ${opt}</label>
+        `).join('');
+        document.getElementById('optionsContainer').innerHTML = optHtml;
+
+        if(userAnswers[currentIdx] !== undefined) {
+            const radios = document.getElementsByName('quizOpt');
+            if(radios[userAnswers[currentIdx]]) {
+                radios[userAnswers[currentIdx]].checked = true;
+            }
+        }
+
+        if(currentIdx === 0) {
+            document.getElementById('prevBtn').style.display = 'none';
+        } else {
+            document.getElementById('prevBtn').style.display = 'inline-block';
+        }
+        document.getElementById('nextBtn').innerText = "다음 문제";
+    }
+
+    function finishExam() {
+        clearInterval(timerInterval);
+        let score = 0;
+        for(let i = 0; i < currentQuizList.length; i++) {
+            if(userAnswers[i] === currentQuizList[i].answer) {
+                score++;
+            }
+        }
+
+        document.getElementById('quizContainer').classList.add('hidden');
+        document.getElementById('timerWrapper').style.display = "none";
+        document.getElementById('periodBanner').classList.add('hidden');
+        document.getElementById('resultContainer').classList.remove('hidden');
+        document.getElementById('scoreText').innerText = `총 ${currentQuizList.length}문제 중 ${score}문제를 맞추셨습니다!`;
+    }
+
+    function showNoteScreen() {
+        document.getElementById('resultContainer').classList.add('hidden');
+        const noteListDiv = document.getElementById('noteListContent');
+        
+        let html = "";
+        let wrongCount = 0;
+
+        for(let i = 0; i < currentQuizList.length; i++) {
+            let q = currentQuizList[i];
+            let userAns = userAnswers[i]; 
+
+            if(userAns !== q.answer) {
+                wrongCount++;
+                html += `<div class="note-item">`;
+                html += `<div style="font-weight:bold; margin-bottom:10px;">문제 ${i+1}. ${q.q}</div>`;
+                
+                q.options.forEach((optText, oIdx) => {
+                    let spanClass = "opt-span";
+                    let badge = "";
+                    if(oIdx === q.answer) {
+                        spanClass += " correct-ans";
+                        badge = " 【정답】";
+                    }
+                    if(oIdx === userAns) {
+                        spanClass += " my-wrong";
+                        badge = " 【내가 쓴 오답】";
+                    }
+                    html += `<div class="${spanClass}">${optText}${badge}</div>`;
+                });
+
+                html += `</div>`;
+            }
+        }
+
+        if(wrongCount === 0) {
+            html = `<p style="text-align:center; font-size:1.2em; color:green; padding:30px;">축하합니다! 틀린 문제가 없습니다. 모든 문제를 맞추셨습니다!</p>`;
+        }
+
+        noteListDiv.innerHTML = html;
+        document.getElementById('noteContainer').classList.remove('hidden');
+    }
+
+    function backToResult() {
+        document.getElementById('noteContainer').classList.add('hidden');
+        document.getElementById('resultContainer').classList.remove('hidden');
+    }
+
+    function goToMain() {
+        clearInterval(timerInterval);
+        document.getElementById('cbtScreen').classList.add('hidden');
+        document.getElementById('requirementScreen').classList.add('hidden');
+        document.getElementById('adminScreen').classList.add('hidden');
+        document.getElementById('noteContainer').classList.add('hidden');
+        document.getElementById('mainScreen').classList.remove('hidden');
+        document.getElementById('periodBanner').classList.remove('hidden');
+        updateDDayDisplay("전기기능사");
+    }
+
+    function showAdminScreen() {
+        document.getElementById('mainScreen').classList.add('hidden');
+        document.getElementById('adminScreen').classList.remove('hidden');
+
+        const dateContainer = document.getElementById('adminDateInputs');
+        let dateHtml = "";
+        for (let sub in examDates) {
+            dateHtml += `<div style="margin-bottom: 8px;"><label style="display:inline-block; width:130px; font-weight:bold;">${sub}:</label> <input type="date" id="date_${sub}" value="${examDates[sub]}"></div>`;
+        }
+        dateContainer.innerHTML = dateHtml;
+        document.getElementById('adminQuizCount').value = quizCountSetting;
+
+        renderLoginLogs("all");
+    }
+
+    function toggleLogView() {
+        const section = document.getElementById('logSection');
+        section.classList.toggle('hidden');
+    }
+
+    function filterLogsByYear() {
+        const selectedYear = document.getElementById('yearSelect').value;
+        renderLoginLogs(selectedYear);
+    }
+
+    function renderLoginLogs(yearFilter) {
+        const tbody = document.getElementById('loginLogsBody');
+        const statsDiv = document.getElementById('yearlyStats');
+
+        let filteredLogs = loginLogs;
+        if (yearFilter !== "all") {
+            filteredLogs = loginLogs.filter(log => log.time.startsWith(yearFilter));
+        }
+
+        statsDiv.innerText = `📈 [통계 요약] 선택된 연도(${yearFilter === "all" ? "전체 기간" : yearFilter + "년"}) 총 로그인 횟수: ${filteredLogs.length}회`;
+
+        if (filteredLogs.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" style="color: #777; padding: 20px;">로그인 기록이 없습니다.</td></tr>`;
+        } else {
+            tbody.innerHTML = filteredLogs.map((log, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${log.id}</td>
+                    <td>${log.time}</td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    function saveAdminSettings() {
+        for (let sub in examDates) {
+            const val = document.getElementById(`date_${sub}`).value;
+            if(val) {
+                examDates[sub] = val;
+            }
+        }
+        alert("시험 날짜가 성공적으로 수정 및 저장되었습니다!");
+        updateDDayDisplay("전기기능사");
+    }
+
+    function saveQuizCount() {
+        const cnt = parseInt(document.getElementById('adminQuizCount').value);
+        if(!cnt || cnt <= 0) {
+            alert("올바른 숫자를 입력해주세요.");
+            return;
+        }
+        quizCountSetting = cnt;
+        alert(`기본 출제 문제가 고정 ${quizCountSetting}문제로 설정되었습니다!`);
+    }
+
+    function addNewQuestion() {
+        const sub = document.getElementById('newQSubject').value.trim();
+        const text = document.getElementById('newQText').value.trim();
+        const opts = document.getElementById('newQOpts').value.trim().split(',');
+
+        if(!sub || !text || opts.length < 2) {
+            alert("과목명, 문제 내용, 보기를 올바르게 입력해주세요.");
+            return;
+        }
+
+        if(!rawData[sub]) {
+            rawData[sub] = [];
+        }
+
+        rawData[sub].push({
+            q: text,
+            options: opts,
+            answer: 0
+        });
+
+        alert("새로운 문제가 관리자 모드에 성공적으로 등록되었습니다!");
+        document.getElementById('newQSubject').value = '';
+        document.getElementById('newQText').value = '';
+        document.getElementById('newQOpts').value = '';
+    }
+</script>
+
+</body>
+</html>
